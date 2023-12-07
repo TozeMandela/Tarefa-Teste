@@ -1,8 +1,21 @@
-import { App } from '../app';
 import 'dotenv/config';
+import { App } from '../app';
+import {db} from '../databases/models/';
+
+const {app} = new App();
+
 const {PORT} = process.env;
 
 
-new App().app.listen(PORT, () =>{
-	console.log('server ligado', PORT);
+db.authenticate().then(da =>{
+	console.log('database connected', da);
+	app.emit('on');
+}).catch(err =>{
+	console.log('\n\n\nerro ao ligar o servidor, pois a base de dados encontra-se offiline\n\n\n', err);
+});
+
+app.on('on', () =>{
+	app.listen(PORT, () =>{
+		console.log('server ligado', PORT);
+	});
 });
