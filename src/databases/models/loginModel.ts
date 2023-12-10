@@ -1,8 +1,10 @@
 import { db } from '.';
 import Sequelize,{ Model } from 'sequelize';
+import { Users } from './usersModel';
 
 class Logins extends Model {
 	id: number | undefined;
+	username: string | undefined;
 	password: string | undefined;
 	passwordConfirm: string | undefined;
 	userId: number | undefined;
@@ -17,6 +19,11 @@ Logins.init({
 		autoIncrement: true,
 		allowNull: false,
 		primaryKey: true
+	},
+	username: {
+		type: Sequelize.STRING(25),
+		allowNull: false,
+		unique: true,
 	},
 	password: {
 		type: Sequelize.STRING(25),
@@ -43,4 +50,6 @@ Logins.init({
 	timestamps: true
 });
 
+Logins.belongsTo(Users, {foreignKey: 'userId'});
+Users.hasOne(Logins);
 export {Logins};

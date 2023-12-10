@@ -4,7 +4,7 @@ import { Login } from '../classes/login';
 import { User } from '../classes';
 import { WhereOptions } from 'sequelize';
 import { isBodyOrQueryOrParam } from '../shared';
-import { Logins } from '../databases';
+import { Logins, Users } from '../databases';
 
 
 
@@ -38,4 +38,38 @@ export const ShowOne: RequestHandler = async (req, res) => {
 	}
 
 	res.status(StatusCodes.CREATED).json({ info: data});
+};
+export const login: RequestHandler = async (req, res) => {
+	let dataUser: Users | null;
+	let dataLogin: Logins | null;
+
+	try {
+		const verifydataInTableUser = {phoneNumber: req.body.username};
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		let verifydataInTableLogin: WhereOptions<any> | undefined;
+
+		dataUser = await User.getOne(verifydataInTableUser);
+
+		if(!dataUser) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
+
+		if(dataUser) verifydataInTableLogin = {user_id: dataUser.dataValues.id};
+
+		dataLogin = await Login.getOne(verifydataInTableLogin);
+
+		if(!dataLogin) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
+		console.log(req.body.password, dataLogin.dataValues.password);
+		try{
+			const isUserValid = await Login.comparePassw(req.body.password.trim(), dataLogin.dataValues.password);
+			console.log('in login: \n\n\n\n', isUserValid);
+		}catch (error) {
+			return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
+		}
+
+
+
+	} catch (error) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
+	}
+
+	res.status(StatusCodes.CREATED).json({ info: 'data'});
 };

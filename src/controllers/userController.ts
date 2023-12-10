@@ -3,6 +3,7 @@ import { StatusCodes as stc } from 'http-status-codes';
 import { IBodyProps, User } from '../classes';
 import { WhereOptions } from 'sequelize';
 import { isBodyOrQueryOrParam } from '../shared';
+import { Login } from '../classes/login';
 
 export const cadastrosPage: RequestHandler = (req, res) => {
 	console.log(res.locals.token);
@@ -68,6 +69,16 @@ export const actualizar: RequestHandler = async (req, res) => {
 	if(user._errors.length !== 0) return res.status(stc.CONFLICT).json({Errors: user._errors});
 
 	try {
+		const obj = {user_id: req.params.id};
+		const control = await Login.getOne(obj);
+
+		if(control){
+			const excludesData = ['id', 'name', 'gender', 'phoneNumber', 'nationality', 'numberIdentity'];
+			const exist = excludesData.some(el => Object.keys(req.body).indexOf(el));
+
+			if(exist) return res.status(stc.CONFLICT).json({Errors: 'impossivel actualizar, existem dados imutaveis'});
+		}
+
 		await User.updated(user._body, search[1]);
 	} catch (error) {
 		return res.status(stc.CONFLICT).json({Errors: 'erro ao actualizar o ... na bd ', error});
