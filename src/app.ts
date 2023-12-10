@@ -3,6 +3,7 @@ import express, { Express } from 'express';
 // @ts-ignore
 import cors from 'cors';
 import users from './routes/usersRoute';
+import login from './routes/loginRoute';
 import session from 'express-session';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -41,6 +42,7 @@ class App {
 		});
 
 		this.app.use('/users', users);
+		this.app.use('/login', login);
 	}
 }
 

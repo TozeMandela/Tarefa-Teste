@@ -1,7 +1,7 @@
 import { db } from '.';
 import Sequelize,{ Model } from 'sequelize';
 
-class Login extends Model {
+class Logins extends Model {
 	id: number | undefined;
 	password: string | undefined;
 	passwordConfirm: string | undefined;
@@ -10,7 +10,7 @@ class Login extends Model {
 	updated_at: Date | undefined;
 }
 
-Login.init({
+Logins.init({
 	id: {
 		type: Sequelize.INTEGER,
 		unique: true,
@@ -32,6 +32,7 @@ Login.init({
 			model: 'users',
 			key: 'id'
 		},
+		unique: true,
 		onUpdate: 'CASCADE',
 		onDelete: 'CASCADE',
 	}
@@ -42,4 +43,4 @@ Login.init({
 	timestamps: true
 });
 
-export {Login};
+export {Logins};
