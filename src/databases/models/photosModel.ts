@@ -1,11 +1,12 @@
 import { db } from '.';
 import Sequelize,{ Model } from 'sequelize';
 
-class Photo extends Model {
+class Photos extends Model {
 	id: number | undefined;
 	originalname: string | undefined;
 	filename: string | undefined;
 	destination: string | undefined;
+	mimetype: string | undefined;
 	path: string | undefined;
 	size: string | undefined;
 	articleId: number | undefined;
@@ -13,7 +14,7 @@ class Photo extends Model {
 	updated_at: Date | undefined;
 }
 
-Photo.init({
+Photos.init({
 	id: {
 		type: Sequelize.INTEGER,
 		unique: true,
@@ -30,6 +31,10 @@ Photo.init({
 		allowNull: false,
 	},
 	destination: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	mimetype: {
 		type: Sequelize.STRING,
 		allowNull: false,
 	},
@@ -57,4 +62,4 @@ Photo.init({
 	timestamps: true
 });
 
-export {Photo};
+export {Photos};

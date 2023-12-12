@@ -5,11 +5,6 @@ import { WhereOptions } from 'sequelize';
 import { isBodyOrQueryOrParam } from '../shared';
 import { Login } from '../classes/login';
 
-export const cadastrosPage: RequestHandler = (req, res) => {
-	console.log(res.locals.token);
-	return res.json({ info: 'funcionando...', _csrf: res.locals.token});
-};
-
 export const cadastros: RequestHandler<object, object, IBodyProps> = async (req, res) => {
 	const user = new User(req.body);
 	user.clean();
@@ -38,6 +33,7 @@ export const pesquisarOne: RequestHandler = async (req, res) => {
 };
 
 export const pesquisar: RequestHandler = async (req, res) => {
+
 	let users: Array<object>;
 	try {
 		users = await User.getAll();
@@ -45,7 +41,7 @@ export const pesquisar: RequestHandler = async (req, res) => {
 		return res.status(stc.CONFLICT).json({Errors: 'erro ao buscar os ... na bd', error});
 	}
 
-	return res.status(stc.CREATED).json({users});
+	return res.status(stc.CREATED).json({userLogado: res.locals.userLogado, users});
 };
 
 export const remover: RequestHandler = async (req, res) => {

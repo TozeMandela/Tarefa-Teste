@@ -1,5 +1,7 @@
 import { RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 import { Login } from '../classes/login';
 import { User } from '../classes';
 import { WhereOptions } from 'sequelize';
@@ -39,9 +41,12 @@ export const ShowOne: RequestHandler = async (req, res) => {
 
 	res.status(StatusCodes.CREATED).json({ info: data});
 };
+
+
 export const login: RequestHandler = async (req, res) => {
 	let dataUser: Users | null;
 	let dataLogin: Logins | null;
+	const {JWT_SECREET} = process.env;
 
 	try {
 		const verifydataInTableUser = {phoneNumber: req.body.username};
@@ -53,23 +58,19 @@ export const login: RequestHandler = async (req, res) => {
 		if(!dataUser) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
 
 		if(dataUser) verifydataInTableLogin = {user_id: dataUser.dataValues.id};
-
+		const { id, name, email, phoneNumber } = dataUser.dataValues;
 		dataLogin = await Login.getOne(verifydataInTableLogin);
 
 		if(!dataLogin) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
-		console.log(req.body.password, dataLogin.dataValues.password);
-		try{
-			const isUserValid = await Login.comparePassw(req.body.password.trim(), dataLogin.dataValues.password);
-			console.log('in login: \n\n\n\n', isUserValid);
-		}catch (error) {
-			return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
-		}
 
+		const isUserValid = Login.comparePassw(dataLogin.dataValues.password, req.body.password);
 
+		if (!isUserValid) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
 
+		const token = jwt.sign({ id }, JWT_SECREET!, {expiresIn: '1h'});
+
+		res.status(StatusCodes.ACCEPTED).json({ info: [{ name,email,phoneNumber}], token });
 	} catch (error) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
 	}
-
-	res.status(StatusCodes.CREATED).json({ info: 'data'});
 };

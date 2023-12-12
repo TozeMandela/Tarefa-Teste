@@ -3,6 +3,7 @@ import express, { Express } from 'express';
 // @ts-ignore
 import cors from 'cors';
 import users from './routes/usersRoute';
+import articles from './routes/articleRoute';
 import login from './routes/loginRoute';
 import session from 'express-session';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,10 +11,8 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import csrf from 'csurf';
-import { errorToken, getToken, sessionOption } from './middlewares';
-
-
-
+import { errorToken, getToken, sessionOption } from './middlewares/csrfToken';
+import { Errors } from './middlewares/errors';
 
 class App {
 	readonly app: Express;
@@ -33,6 +32,7 @@ class App {
 		this.app.use(csrf());
 		this.app.use(getToken);
 		this.app.use(errorToken);
+		this.app.use(Errors);
 	}
 
 	routes() {
@@ -42,6 +42,7 @@ class App {
 		});
 
 		this.app.use('/users', users);
+		this.app.use('/articles', articles);
 		this.app.use('/login', login);
 	}
 }

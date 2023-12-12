@@ -32,10 +32,9 @@ class Login {
 		this.isValidData(this.body);
 
 		if(this.errors.length > 0) return this.errors;
-		const salt = bcript.genSaltSync(10);
-		console.log('salt\n\n',salt);
 
-		this.body['password'] = bcript.hashSync(this.body.password, salt);
+		this.body.password = bcript.hashSync(this.body.password, 10);
+
 	}
 
 	private isValidData(data: ILoginProps) {
@@ -47,7 +46,7 @@ class Login {
 
 				break;
 			case 'password':
-				if(validator.isEmpty(data[key]) && !validator.isLength(data[key], {min: 6, max: 25})) this.errors.push('forneça uma senha valida!');
+				if(validator.isEmpty(data[key]) && !validator.isLength(data[key], {min: 6})) this.errors.push('forneça uma senha valida!');
 
 				break;
 			case 'passwordConfirm':
@@ -61,7 +60,6 @@ class Login {
 		}
 	}
 
-
 	static async create(data: Omit<ILoginProps, '_csrf'>) {
 		await Logins.create(data);
 	}
@@ -73,6 +71,7 @@ class Login {
 
 		});
 	}
+
 	static comparePassw(oldSenha: string,senhaIn: string){
 		return bcript.compareSync(senhaIn, oldSenha);
 	}

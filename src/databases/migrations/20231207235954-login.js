@@ -12,16 +12,16 @@ module.exports = {
 				primaryKey: true
 			},
 			username: {
-				type: Sequelize.STRING(25),
+				type: Sequelize.STRING,
 				allowNull: false,
 				unique: true,
 			},
 			password: {
-				type: Sequelize.STRING(25),
+				type: Sequelize.STRING,
 				allowNull: false,
 			},
 			password_confirm: {
-				type: Sequelize.STRING(25),
+				type: Sequelize.STRING,
 				allowNull: false,
 			},
 			user_id: {

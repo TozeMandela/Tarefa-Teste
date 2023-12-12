@@ -6,11 +6,11 @@ class Article extends Model {
 	title: string | undefined;
 	descrition: string | undefined;
 	isPromotion: boolean | undefined;
-	priceOrininal: string | undefined;
-	pricePromotional: string | undefined;
+	priceOrininal: number | undefined;
+	pricePromotional: number | undefined;
 	quantityInitial: string | undefined;
 	quantityBuy: string | undefined;
-	userId: string | undefined;
+	userId: number | undefined;
 	created_at: Date | undefined;
 	updated_at: Date | undefined;
 }
