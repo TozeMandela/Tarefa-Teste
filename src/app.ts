@@ -37,8 +37,7 @@ class App {
 
 	routes() {
 		this.app.get('/', (req, res) => {
-			console.log(res.locals.token);
-			return res.json({ info: 'funcionando...', _csrf: res.locals.token});
+			return res.json([{ _csrf: res.locals.token}]);
 		});
 
 		this.app.use('/users', users);

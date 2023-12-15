@@ -9,6 +9,12 @@ import { isBodyOrQueryOrParam } from '../shared';
 import { Logins, Users } from '../databases';
 
 
+export const gettoken: RequestHandler = async (req, res) => {
+
+	const {id} = res.locals.userLogado;
+	console.log('entreiiii', id);
+	return res.status(StatusCodes.ACCEPTED).json([{id}]);
+};
 
 export const register: RequestHandler = async (req, res) => {
 	const login = new Login(req.body);
@@ -58,7 +64,7 @@ export const login: RequestHandler = async (req, res) => {
 		if(!dataUser) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
 
 		if(dataUser) verifydataInTableLogin = {user_id: dataUser.dataValues.id};
-		const { id, name, email, phoneNumber } = dataUser.dataValues;
+		const { id } = dataUser.dataValues;
 		dataLogin = await Login.getOne(verifydataInTableLogin);
 
 		if(!dataLogin) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'credenciais invalidas'});
@@ -69,7 +75,7 @@ export const login: RequestHandler = async (req, res) => {
 
 		const token = jwt.sign({ id }, JWT_SECREET!, {expiresIn: '1h'});
 
-		res.status(StatusCodes.ACCEPTED).json({ info: [{ name,email,phoneNumber}], token });
+		return res.status(StatusCodes.ACCEPTED).json([{ token, id }]);
 	} catch (error) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
 	}
