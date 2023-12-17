@@ -28,11 +28,10 @@ export const register: RequestHandler = async (req, res) => {
 
 		if(!user) return res.status(StatusCodes.BAD_REQUEST).json({ info: 'usuario inexistente'});
 		await Login.create(login._body);
+		return res.status(StatusCodes.CREATED).json({ info: 'redistrado com sucesso!'});
 	} catch (error) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
+		return res.status(StatusCodes.BAD_REQUEST).json({ Errors: error });
 	}
-
-	res.status(StatusCodes.CREATED).json({ info: 'redistrado com sucesso!'});
 };
 
 export const ShowOne: RequestHandler = async (req, res) => {
@@ -41,11 +40,11 @@ export const ShowOne: RequestHandler = async (req, res) => {
 
 	try {
 		data = await Login.getOne(search[0]);
+		return res.status(StatusCodes.CREATED).json({ info: data});
 	} catch (error) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
+		return res.status(StatusCodes.BAD_REQUEST).json({ Errors: error});
 	}
 
-	res.status(StatusCodes.CREATED).json({ info: data});
 };
 
 
@@ -77,6 +76,6 @@ export const login: RequestHandler = async (req, res) => {
 
 		return res.status(StatusCodes.ACCEPTED).json([{ token, id }]);
 	} catch (error) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ info: error});
+		return res.status(StatusCodes.BAD_REQUEST).json({ Errors: error});
 	}
 };
